@@ -55,6 +55,11 @@ macro(ign_setup_packages)
   list(APPEND CPACK_SOURCE_GENERATOR "ZIP")
   list(APPEND CPACK_SOURCE_IGNORE_FILES "TODO;\.hg/;\.sw.$;/build/;\.hgtags;\.hgignore;appveyor\.yml;\.travis\.yml;codecov\.yml")
 
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    SET(CMAKE_INSTALL_DEBUG_LIBRARIES true)
+    SET(CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY true)
+  endif()
+
   include(InstallRequiredSystemLibraries)
 
   #execute_process(COMMAND dpkg --print-architecture _NPROCE)

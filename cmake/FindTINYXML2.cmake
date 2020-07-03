@@ -1,65 +1,30 @@
-#===============================================================================
-# Copyright (C) 2017 Open Source Robotics Foundation
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-########################################
-# Find tinyxml2. Only debian distributions package tinyxml with a pkg-config.
+# TINYXML2_FOUND
+# TINYXML2_INCLUDE_DIRS
+# TINYXML2_LIBRARIES
 
-include(IgnPkgConfig)
-
-# Use pkg_check_modules to start
-ign_pkg_check_modules_quiet(TINYXML2 tinyxml2)
-
-# If that failed, then fall back to manual detection (necessary for MacOS)
-if(NOT TINYXML2_FOUND)
-
-  if(NOT TINYXML2_FIND_QUIETLY)
-    message(STATUS "Attempting manual search for tinyxml2")
+# try to find the CMake config file for TINYXML2 first
+find_package(TINYXML2 CONFIG QUIET)
+if(TINYXML2_FOUND)
+  message(STATUS "Found TINYXML2 via Config file: ${TINYXML2_DIR}")
+  if(NOT TINYXML2_LIBRARY AND TARGET tinyxml2)
+    # in this case, we're probably using TINYXML2 version 5.0.0 or greater
+    # in which case tinyxml2 is an exported target and we should use that    
+    set(TINYXML2_LIBRARY tinyxml2)
   endif()
+else()
+  find_path(TINYXML2_INCLUDE_DIR NAMES tinyxml2.h)
 
-  find_path(TINYXML2_INCLUDE_DIRS tinyxml2.h ${TINYXML2_INCLUDE_DIRS} ENV CPATH)
-  find_library(TINYXML2_LIBRARIES NAMES tinyxml2)
-  set(TINYXML2_FOUND true)
-
-  if(NOT TINYXML2_INCLUDE_DIRS)
-
-    if(NOT TINYXML2_FIND_QUIETLY)
-      message(STATUS "Looking for tinyxml2 headers - not found")
-    endif()
-
-    set(TINYXML2_FOUND false)
-
-  endif()
-
-  if(NOT TINYXML2_LIBRARIES)
-
-    if(NOT TINYXML2_FIND_QUIETLY)
-      message (STATUS "Looking for tinyxml2 library - not found")
-    endif()
-
-    set(TINYXML2_FOUND false)
-
-  endif()
-
-  if(TINYXML2_FOUND)
-    include(IgnImportTarget)
-    ign_import_target(TINYXML2)
-  endif()
+  find_library(TINYXML2_LIBRARY tinyxml2)
 
   include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(
-    TINYXML2
-    REQUIRED_VARS TINYXML2_FOUND)
+  find_package_handle_standard_args(tinyxml2 DEFAULT_MSG TINYXML2_LIBRARY TINYXML2_INCLUDE_DIR)
 
+  mark_as_advanced(TINYXML2_INCLUDE_DIR TINYXML2_LIBRARY)
+endif()
+
+if(NOT TINYXML2_INCLUDE_DIRS)
+  set(TINYXML2_INCLUDE_DIRS ${TINYXML2_INCLUDE_DIR})
+endif()
+if(NOT TINYXML2_LIBRARIES)
+  set(TINYXML2_LIBRARIES ${TINYXML2_LIBRARY})
 endif()

@@ -289,7 +289,7 @@ macro(ign_find_package PACKAGE_NAME)
 
     # TODO: When we migrate to cmake-3.9+ bring back find_dependency(~) because
     #       at that point it will be able to support COMPONENTS and EXTRA_ARGS
-#    set(${PACKAGE_NAME}_find_dependency "find_dependency(${${PACKAGE_NAME}_dependency_args})")
+    #    set(${PACKAGE_NAME}_find_dependency "find_dependency(${${PACKAGE_NAME}_dependency_args})")
 
     set(${PACKAGE_NAME}_find_dependency "find_package(${${PACKAGE_NAME}_dependency_args})")
 
@@ -1763,4 +1763,17 @@ macro(_ign_cmake_parse_arguments prefix options oneValueArgs multiValueArgs)
 
   endif()
 
+endmacro()
+
+#################################################
+# print_all_variables()
+#
+# prints all the cmake variables. use for debugging cmake scripts.
+macro(print_all_variables)
+    message(STATUS "print_all_variables------------------------------------------{")
+    get_cmake_property(_variableNames VARIABLES)
+    foreach (_variableName ${_variableNames})
+        message(STATUS "${_variableName}=${${_variableName}}")
+    endforeach()
+    message(STATUS "print_all_variables------------------------------------------}")
 endmacro()
